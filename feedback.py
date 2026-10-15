@@ -1,13 +1,22 @@
-def evaluate(target, guess):
+from collections import Counter
 
-    # occurrence, producing incorrect duplicate-letter feedback.
+def evaluate(target, guess):
     result = ["gray"] * len(guess)
-    for i, ch in enumerate(guess):
-        if ch == target[i]:
+    remaining = Counter()
+
+    # Pass 1: Mark exact matches and count unmatched target letters.
+    for i, ch in enumerate(target):
+        if guess[i] == ch:
             result[i] = "green"
+        else:
+            remaining[ch] += 1
+
+    # Pass 2: Mark yellow only when an occurrence remains.
     for i, ch in enumerate(guess):
         if result[i] == "green":
             continue
-        if ch in target:
+        if remaining[ch] > 0:
             result[i] = "yellow"
+            remaining[ch] -= 1
+
     return result
